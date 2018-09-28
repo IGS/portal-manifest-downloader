@@ -52,11 +52,25 @@ if not (args.manifest_id and args.username):
     parser.print_help(sys.stderr)
     sys.exit(1)
 
-url = 'http://portal.nihdatacommons.us/api/manifest?id=' + args.manifest_id
+
+filename = 'dcppc_manifest_' + args.manifest_id + '.tsv'
+url = 'http://portal.nihdatacommons.us/api/manifest?id=' + filename
 print ("Fetching manifest...")
 
 response = requests.get(url, auth=requests.auth.HTTPBasicAuth(args.username, pw))
-with open(args.manifest_id, 'wb') as f:
-    f.write(response.content)
+if response.status_code == 404:
+    filename = 'dcppc_manifest_metadata' + args.manifest_id + '.tsv'
+    url = 'http://portal.nihdatacommons.us/api/manifest?id=' + filename
+    response = requests.get(url, auth=requests.auth.HTTPBasicAuth(args.username, pw))
 
-print ("Done.")
+elif response.status_code != 200:
+    if response.status_code == 404:
+        print("No manifest was found with the given ID")
+    else:
+        print("An HTTP response code of " + str(response.status_code) + " was returned")
+        print(response.content)
+else:
+    with open(filename, 'wb') as f:
+        f.write(response.content)
+    print ("Done.")
+
