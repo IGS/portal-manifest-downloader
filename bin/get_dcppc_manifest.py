@@ -58,12 +58,13 @@ url = 'http://portal.nihdatacommons.us/api/manifest?id=' + filename
 print ("Fetching manifest...")
 
 response = requests.get(url, auth=requests.auth.HTTPBasicAuth(args.username, pw))
-if response.status_code == 404:
-    filename = 'dcppc_manifest_metadata' + args.manifest_id + '.tsv'
+
+if response.status_code == 404 or response.status_code == 500:
+    filename = 'dcppc_manifest_metadata_' + args.manifest_id + '.tsv'
     url = 'http://portal.nihdatacommons.us/api/manifest?id=' + filename
     response = requests.get(url, auth=requests.auth.HTTPBasicAuth(args.username, pw))
 
-elif response.status_code != 200:
+if response.status_code != 200:
     if response.status_code == 404:
         print("No manifest was found with the given ID")
     else:
