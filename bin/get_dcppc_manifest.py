@@ -5,15 +5,32 @@ import sys
 import requests
 import getpass
 
+"""DCPPC manifest Downloader
+
+Source: https://github.com/dcppc-phosphorous/manifest-downloader
+
+This software is used in conjunction with the portal.nihdatacommons.us site
+to allow DCPPC users to download the manifests which have been saved to the
+cloud during use of that website.
+
+Example:
+
+        $ python -m <manifest-id> -u <username> get_dcppc_manifest.py
+
+Note: The manifest-id is issued by the portal.nihdatacommons.us site and
+presented to the user at the time the manifest file is saved to the cloud.
+
+"""
+
 def query_yes_no(question, default="no"):
-    """Ask a yes/no question via input() and return their answer.
+    """Ask a yes/no question via input() and return user's answer.
     "question" is a string that is presented to the user.
     "default" is the presumed answer if the user just hits <Enter>.
         It must be "yes" (the default), "no" or None (meaning
         an answer is required of the user).
     The "answer" return value is True for "yes" or False for "no".
     """
-    valid = {"yes": True, "y": True, "ye": True,
+    valid = {"yes": True, "y": True,
              "no": False, "n": False}
     if default is None:
         prompt = " [y/n] "
@@ -40,18 +57,17 @@ parser.add_argument("-m", "--manifest-id", help="ID that was presented when the 
 parser.add_argument("-u", "--username", help="Your username for accessing https://portal.nihdatacommons.us/")
 args = parser.parse_args()
 
-prompt="Do you acknowledge that you have read and agree to the NIH data access policy (https://gdc.cancer.gov/access-data/data-access-policies)?"
-
-confirmation = query_yes_no(prompt)
-
-print ("\nPlease enter your DCPPC Password")
-pw = getpass.getpass()
-
 if not (args.manifest_id and args.username):
     print("Must supply id and username")
     parser.print_help(sys.stderr)
     sys.exit(1)
 
+prompt="Do you agree that you are executing this in a cloud environment per the policies of the DCPPC and also that you have read and agree to the NIH data access policy (https://gdc.cancer.gov/access-data/data-access-policies)?"
+
+confirmation = query_yes_no(prompt)
+
+print ("\nPlease enter your DCPPC Password")
+pw = getpass.getpass()
 
 filename = 'dcppc_manifest_' + args.manifest_id + '.tsv'
 url = 'http://portal.nihdatacommons.us/api/manifest?id=' + filename
