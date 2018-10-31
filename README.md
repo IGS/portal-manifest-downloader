@@ -8,11 +8,13 @@ To start the onboarding process to gain access, please begin [here](https://hack
 
 On your cloud-based VM, ensure that you have git installed as well as Python 3.x.
 
-The downloader requires Python 3 and the 'request's library:
+The downloader requires Python 3 as well as the 'requests' and 'oauth2client' libraries:
 
 [Python 3](https://www.python.org/downloads/)
 
 [requests](https://pypi.org/project/requests/)
+
+[oauth2client](https://pypi.org/project/oauth2client/)
 
 One easy way to install Python 3 and the necessary dependencies is to use [Virtualenv](https://virtualenv.pypa.io).
 
@@ -25,8 +27,7 @@ $ git clone https://github.com/dcppc-phosphorous/manifest-downloader.git
 
 2) Run the downloader:
 ```
-$ ./bin/get_dcppc_manifest.py -m <manifest_id> -u <username>
+$ ./bin/get_dcppc_manifest.py -m <manifest_id>
 ```
 
-You will be prompted for your DCPPC Portal password interactively.
-
+You will be presented with a URL which will authenticate you so that you may obtain an access token. This token will be pasted back into the program's input so that the manifest may be downloaded.
